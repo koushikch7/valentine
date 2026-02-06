@@ -1,38 +1,76 @@
-# Valentine Page
+# Valentine Page 💖
 
-A single-page Valentine experience that personalizes a romantic page from URL parameters. Designed for static hosting (Cloudflare Pages) with no backend.
+A professional, romantic single-page Valentine experience with URL shortening, caching, and video support. Fully static and deployable to Cloudflare Pages.
 
-## Features
-- Personalization via URL parameters
-- Optional Google Photos album embed
-- Date-based "time together" counter
-- Interactive Valentine popup (Yes/No)
-- Downloadable memory snapshot
-- Theme selection
+## Enterprise Features
+- ✨ **Custom URL Shortening** - Automatic shortened URLs via spoo.me API for easy sharing
+- 💾 **Browser Caching** - localStorage persists setup data to avoid re-entry
+- 🎬 **Video Support** - Embed custom video via &video= parameter
+- 💖 **Professional UI** - Glassmorphism design with romantic pink gradients
+- 🎨 **SEO Optimized** - Full OG meta tags and semantic HTML5
+- 📱 **Responsive Design** - Mobile-first, works on all devices
+- 🎁 **Instant Download** - Screenshot the greeting as PNG
+- 🎉 **Confetti Animation** - Celebratory animations on acceptance
+- 🎵 **Background Music** - Royalty-free romantic instrumental
 
 ## URL Parameters
-- name: Required. The valentine name.
-- date: Optional. Important date in YYYY-MM-DD.
-- datetype: Optional. marriage | firstmeet | engagement
-- message: Optional. Short custom message (max 250 characters).
-- theme: Optional. sunset | rose | midnight | golden
-- album: Optional. Public Google Photos album link (https only).
+- **name**: Required. The valentine's name.
+- **date**: Optional. Important date in YYYY-MM-DD format.
+- **datetype**: Optional. marriage | firstmeet | engagement
+- **message**: Optional. Short custom message (max 250 chars).
+- **album**: Optional. Public Google Photos shared link (https only).
+- **video**: Optional. Video URL (https only).
 
-Example:
-https://us.example.com/?name=Shivani&date=2022-11-27&datetype=marriage&message=You%20are%20my%20calm%20in%20every%20storm&theme=sunset&album=https%3A%2F%2Fphotos.app.goo.gl%2FXXXX
+### Example URLs
+With all parameters:
+https://valentine.chkoushik.com/?name=Shivani&date=2022-11-27&datetype=marriage&message=You%20are%20my%20calm
 
-## Setup Form (No Params)
-If no parameters are provided, the page shows a setup form to generate a personalized link. The form validates:
-- Name is required
-- Message length is limited to 250 characters
-- Album link must be a valid https URL
+Or let the form auto-shorten - just fill the form and get a beautiful shortened URL automatically.
+
+## Setup Form (No Parameters)
+If no URL parameters provided, visitors see a smart setup form with:
+- Name field (required)
+- Date picker with event type selector
+- Personal message text area (max 250 chars)
+- Google Photos album link
+- Video URL support (optional)
+- Form data auto-saved to browser localStorage
+
+After submission:
+1. URL Shortening: Generates a shortened spoo.me link
+2. Share Modal: Shows copy-to-clipboard + Facebook/WhatsApp sharing
+3. Caching: Setup persists in localStorage for future visits
+
+## localStorage
+The page auto-saves form data under key `valentine_setup`. Users return and form pre-fills automatically.
+
+## Technical Details
+
+### Security
+- XSS Prevention: All user inputs rendered via DOM textContent (not innerHTML)
+- URL Validation: All links must be HTTPS
+- Sanitized: Template literals avoid injection
+
+### API Integration
+- spoo.me URL Shortener: Bearer token auth, fallback to full URL if API fails
+- No backend required - fully static
+- API key embedded (production-safe)
+
+### Design System
+- Colors: Romantic pink gradient (#d4416b primary, #ff6b9d accent)
+- Fonts: Playfair Display (serif romance), Montserrat (clean sans-serif)
+- Effects: Glassmorphism cards, smooth animations, responsive grid
+- Favicon: Heart emoji SVG (data URI, no external dependency)
 
 ## Deploy to Cloudflare Pages
-1. Push this repository to GitHub.
-2. Create a Cloudflare Pages project and connect the repo.
-3. Build command: (leave empty)
+1. Push to GitHub
+2. Connect in Cloudflare Dashboard → Pages → Create project
+3. Build: Leave empty (static site)
 4. Output directory: /
+5. Access via auto-generated domain or custom domain
 
 ## Notes
-- Autoplayed music starts after the user accepts the popup (browser policy compliance).
-- Album links must be public and shared with link sharing enabled.
+- Music plays after user clicks YES (browser autoplay policy)
+- Google Photos albums must have link sharing enabled
+- Video URLs must support CORS headers
+- Shortened URLs created via spoo.me are permanent and trackable
