@@ -5,6 +5,9 @@
 - **URL Shortening Integration**: Automatic spoo.me API integration with Bearer token auth
 - **Browser Caching**: localStorage saves setup data (name, date, message, album, video) for persistent form state
 - **Video Support**: New &video= URL parameter for embedding custom videos
+  - **Cloudflare R2 Integration**: Videos hosted on Cloudflare R2 with custom domain support
+  - Default video URL from R2 as fallback
+  - Fully CORS-enabled CDN delivery
 - **Professional UI Redesign**: 
   - Glassmorphism cards with blur effects
   - Beautiful pink romantic gradient background with radial overlays
@@ -44,8 +47,9 @@
 ### Stability
 - Graceful API failure handling - shortening still works if spoo.me API unavailable
 - localStorage errors caught silently
-- CORS-safe video embedding
+- CORS-safe video embedding (Cloudflare R2 fully supported)
 - Cross-browser compatible
+- **Cloudflare Native**: Works perfectly with Cloudflare Pages + R2 + Workers ecosystem
 
 ## Previous Version (2026-02-06 - Initial)
 - Added improved setup flow with message, theme, and album fields

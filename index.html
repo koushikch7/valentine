@@ -424,6 +424,7 @@ textarea{
 <script>
 const API_KEY='spoo_JQHBbtayq8zwNp8McrBLrTH18uQ6aYchv2yGULzB_JE';
 const STORAGE_KEY='valentine_setup';
+const DEFAULT_VIDEO_URL='https://s3.chkoushik.com/Koushik%20%26%20Vidya%20Wedding%20Teaser%20Traditional%20.mp4';
 
 const params=new URLSearchParams(window.location.search);
 const rawName=params.get("name");
@@ -732,14 +733,16 @@ function renderPage(){
     }
 
     const videoContainer=document.getElementById("videoContainer");
-    const videoUrl=isValidUrl(rawVideo)?rawVideo:"";
-    if(videoUrl){
+    const videoUrl=isValidUrl(rawVideo)?rawVideo:(isValidUrl(cachedData.video)?cachedData.video:"");
+    const finalVideoUrl=videoUrl||DEFAULT_VIDEO_URL;
+    if(isValidUrl(finalVideoUrl)){
         videoContainer.style.display="block";
         const video=document.createElement("video");
-        video.src=videoUrl;
+        video.src=finalVideoUrl;
         video.controls=true;
         video.autoplay=true;
         video.style.maxWidth="100%";
+        video.style.height="auto";
         videoContainer.appendChild(video);
     }
 
