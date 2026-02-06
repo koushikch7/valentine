@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Us ❤️</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Fraunces:wght@600&family=Plus+Jakarta+Sans:wght@300;500&display=swap" rel="stylesheet">
+
+<style>
+:root{
+    --glass:rgba(255,255,255,0.16);
+    --glow:rgba(255,255,255,0.85);
+    --shadow:0 30px 70px rgba(0,0,0,0.35);
+    --accent:#ff4e8a;
+    --accent-soft:#ffd1e2;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+    font-family:'Plus Jakarta Sans',sans-serif;
+    min-height:100vh;
+    overflow-x:hidden;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    color:white;
+    background:linear-gradient(135deg,#ff758c,#ff7eb3,#ffb199);
+    background-size:200% 200%;
+    animation:bgShift 16s ease infinite;
+}
+@keyframes bgShift{
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+
+body.sunset{
+    background:linear-gradient(135deg,#ff758c,#ff7eb3,#ffb199);
+}
+body.rose{
+    background:linear-gradient(135deg,#ff4e50,#ff6f91,#ffc3a0);
+}
+body.midnight{
+    background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+}
+body.golden{
+    background:linear-gradient(135deg,#f7971e,#ffd200);
+}
+
+.ambient{
+    position:fixed;
+    inset:-20% -10% auto auto;
+    width:420px;
+    height:420px;
+    background:radial-gradient(circle,rgba(255,255,255,0.22),rgba(255,255,255,0));
+    filter:blur(10px);
+    animation:floatGlow 12s ease-in-out infinite alternate;
+    pointer-events:none;
+}
+@keyframes floatGlow{
+    from{transform:translate(-20px,-10px)}
+    to{transform:translate(30px,20px)}
+}
+
+.container{
+    backdrop-filter:blur(18px);
+    background:var(--glass);
+    padding:40px;
+    border-radius:26px;
+    width:92%;
+    max-width:780px;
+    box-shadow:var(--shadow);
+    text-align:center;
+    position:relative;
+}
+
+h1{
+    font-family:'Playfair Display',serif;
+    font-size:2.4rem;
+    margin-bottom:10px;
+}
+
+.highlight{
+    text-shadow:0 0 15px var(--glow);
+    animation:heartbeat 2s infinite;
+}
+@keyframes heartbeat{
+    0%,100%{transform:scale(1);}
+    50%{transform:scale(1.08);}
+}
+
+.subtitle{margin:14px 0 22px;opacity:0.92;font-size:1.05rem}
+
+.counter{
+    margin:18px 0 10px;
+    font-size:1.15rem;
+    font-family:'Fraunces',serif;
+}
+.counter strong{color:var(--accent-soft)}
+
+.story{
+    margin-top:28px;
+    line-height:1.8;
+    font-size:1rem;
+    opacity:0.96;
+}
+.story p{margin:0 0 16px}
+
+button{
+    margin:10px;
+    padding:12px 24px;
+    border:none;
+    border-radius:999px;
+    cursor:pointer;
+    font-size:15px;
+    background:white;
+    color:var(--accent);
+    transition:0.3s;
+}
+button:hover{transform:scale(1.08)}
+
+.gallery{margin-top:20px;display:none}
+iframe{width:100%;height:400px;border:none;border-radius:20px}
+
+.default-gallery{
+    margin-top:20px;
+    font-size:2rem;
+    animation:float 3s ease-in-out infinite alternate;
+}
+@keyframes float{
+    from{transform:translateY(0)}
+    to{transform:translateY(-8px)}
+}
+
+.form-grid{
+    display:grid;
+    gap:12px;
+    margin-top:18px;
+}
+input,select,textarea{
+    width:100%;
+    padding:12px 14px;
+    border:none;
+    border-radius:14px;
+    font-size:14px;
+    font-family:'Plus Jakarta Sans',sans-serif;
+}
+textarea{resize:vertical;min-height:110px}
+.small-note{
+    font-size:12px;
+    opacity:0.85;
+    line-height:1.5;
+}
+.helper a{color:#fff;text-decoration:underline}
+
+/* POPUP */
+.popup{
+    position:fixed;
+    top:0;left:0;width:100%;height:100%;
+    background:rgba(0,0,0,0.7);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    z-index:10;
+}
+.popup-box{
+    background:white;
+    color:#ff4e8a;
+    padding:30px;
+    border-radius:20px;
+    text-align:center;
+    width:85%;
+    max-width:420px;
+    position:relative;
+    overflow:hidden;
+}
+.popup-box button{position:relative}
+#noBtn{position:absolute}
+
+.confetti{
+    position:fixed;
+    width:10px;height:10px;
+    top:0;
+    animation:fall 4s linear forwards;
+}
+@keyframes fall{
+    to{transform:translateY(100vh) rotate(720deg);opacity:0}
+}
+</style>
+</head>
+
+<body class="sunset">
+
+<div class="ambient" aria-hidden="true"></div>
+
+<audio id="music" loop>
+<source src="https://cdn.pixabay.com/audio/2022/03/15/audio_c8d5f1b1c3.mp3" type="audio/mpeg">
+</audio>
+
+<div id="app"></div>
+
+<script>
+const params=new URLSearchParams(window.location.search);
+const rawName=params.get("name");
+const rawDate=params.get("date");
+const rawDateType=params.get("datetype");
+const rawTheme=params.get("theme");
+const rawMessage=params.get("message");
+const rawAlbum=params.get("album");
+
+const allowedThemes=["sunset","rose","midnight","golden"];
+const theme=allowedThemes.includes(rawTheme)?rawTheme:"sunset";
+
+document.body.className=theme;
+
+const defaultStory=`Ours wasn’t love at first sight…
+It started with confusion, chaos, and a 30-minute formal meeting in the middle of a weekend mall — not exactly the place you expect to find your forever.
+But destiny had its own plan.
+The real spark happened the next time we met. We talked... and talked… for six hours straight.
+We lost track of time, but not of each other.
+I still remember how she patiently waited for me to finish an office call that was supposed to last 5 minutes… and ended up being 20.
+But once we started talking — we couldn’t stop.
+From strangers in a crowded mall…
+To soulmates who couldn’t let go by the end of that day.
+She was still a bit unsure, but we talked, we opened up — and that’s when we both realized:
+We are one for one.
+Today, as I stand here, I don’t just see my bride…
+I see the calm to my storm, the voice I can listen to endlessly, the person who makes time stop when we’re together.
+I never imagined arranged marriage could feel this magical.
+But now I know…
+Love isn’t always about how it starts — it’s about how deeply it grows.
+And with you, my love, I’m ready to grow forever. 💖`;
+
+const defaultMessage="Every moment with you is my favorite chapter of life.";
+const dateLabels={
+    marriage:"our marriage",
+    firstmeet:"our first meet",
+    engagement:"our engagement"
+};
+
+if(!rawName){
+    renderSetup();
+}else{
+    showPopup();
+}
+
+function renderSetup(){
+    const app=document.getElementById("app");
+    app.innerHTML=`
+        <div class="container">
+            <h1>Create Your Love Page ❤️</h1>
+            <div class="subtitle">A personal page, ready to share in one link.</div>
+            <form id="setupForm" class="form-grid">
+                <input id="nameInput" type="text" placeholder="Valentine's name" required>
+                <input id="dateInput" type="date" placeholder="Important date">
+                <select id="dateTypeInput">
+                    <option value="marriage">Marriage</option>
+                    <option value="firstmeet">First Meet</option>
+                    <option value="engagement">Engagement</option>
+                </select>
+                <textarea id="messageInput" maxlength="250" placeholder="Short message (max 250 characters)"></textarea>
+                <select id="themeInput">
+                    <option value="sunset">Sunset</option>
+                    <option value="rose">Rose</option>
+                    <option value="midnight">Midnight</option>
+                    <option value="golden">Golden</option>
+                </select>
+                <input id="albumInput" type="url" placeholder="Optional Google Photos public link">
+                <button type="submit">Create</button>
+                <div class="small-note helper">
+                    How to create a Google Photos public link:
+                    <br>1) Open the album → 3 dots → Options
+                    <br>2) Enable link sharing
+                    <br>3) Copy the link and paste here
+                    <br><a href="https://support.google.com/photos/answer/6193313" target="_blank" rel="noreferrer">Official guide</a>
+                </div>
+            </form>
+        </div>
+    `;
+
+    document.getElementById("setupForm").addEventListener("submit",(event)=>{
+        event.preventDefault();
+        const name=document.getElementById("nameInput").value.trim();
+        const date=document.getElementById("dateInput").value;
+        const dateType=document.getElementById("dateTypeInput").value;
+        const message=document.getElementById("messageInput").value.trim().slice(0,250);
+        const theme=document.getElementById("themeInput").value;
+        const album=document.getElementById("albumInput").value.trim();
+
+        if(!name){
+            alert("Please enter a name.");
+            return;
+        }
+
+        if(album && !isValidUrl(album)){
+            alert("Please enter a valid https album link.");
+            return;
+        }
+
+        const search=new URLSearchParams();
+        search.set("name",name);
+        if(date) search.set("date",date);
+        if(dateType) search.set("datetype",dateType);
+        if(message) search.set("message",message);
+        if(theme) search.set("theme",theme);
+        if(album) search.set("album",album);
+
+        window.location.href=`?${search.toString()}`;
+    });
+}
+
+function showPopup(){
+    const safeName=rawName.trim();
+    const popup=document.createElement("div");
+    popup.className="popup";
+    popup.id="popup";
+    popup.innerHTML=`
+        <div class="popup-box">
+            <h2 id="popupTitle"></h2>
+            <br>
+            <button id="yesBtn">YES ❤️</button>
+            <button id="noBtn">NO 🙈</button>
+        </div>
+    `;
+    document.body.appendChild(popup);
+
+    document.getElementById("popupTitle").textContent=`Will you be my Valentine, ${safeName}? ❤️`;
+
+    const noBtn=document.getElementById("noBtn");
+    const popupBox=document.querySelector(".popup-box");
+
+    noBtn.addEventListener("mouseover",(event)=>moveNo(event,noBtn,popupBox));
+    noBtn.addEventListener("touchstart",(event)=>moveNo(event,noBtn,popupBox));
+
+    document.getElementById("yesBtn").addEventListener("click",accept);
+}
+
+function moveNo(event,noBtn,popupBox){
+    event.preventDefault();
+    const box=popupBox.getBoundingClientRect();
+    const btn=noBtn.getBoundingClientRect();
+    const maxLeft=box.width-btn.width-16;
+    const maxTop=box.height-btn.height-16;
+    const left=Math.max(8,Math.random()*maxLeft);
+    const top=Math.max(8,Math.random()*maxTop);
+    noBtn.style.position="absolute";
+    noBtn.style.left=`${left}px`;
+    noBtn.style.top=`${top}px`;
+}
+
+function accept(){
+    const popup=document.getElementById("popup");
+    if(popup) popup.remove();
+    document.getElementById("music").play();
+    launchConfetti();
+    renderPage();
+}
+
+function renderPage(){
+    const app=document.getElementById("app");
+    app.innerHTML=`
+        <div class="container">
+            <h1>My Dearest <span class="highlight" id="nameHighlight"></span></h1>
+            <div class="subtitle" id="subtitle"></div>
+            <div class="counter" id="counter"></div>
+            <button id="galleryBtn">Relive Our Moments 📸</button>
+            <button id="downloadBtn">Download Memory</button>
+            <div class="gallery" id="gallery"></div>
+            <div class="story" id="story"></div>
+        </div>
+    `;
+
+    document.getElementById("nameHighlight").textContent=rawName.trim();
+    document.getElementById("subtitle").textContent=(rawMessage||"").trim().slice(0,250)||defaultMessage;
+
+    const storyWrap=document.getElementById("story");
+    defaultStory.split("\n").forEach((line)=>{
+        const trimmed=line.trim();
+        if(!trimmed){
+            return;
+        }
+        const p=document.createElement("p");
+        p.textContent=trimmed;
+        storyWrap.appendChild(p);
+    });
+
+    const gallery=document.getElementById("gallery");
+    const albumUrl=isValidUrl(rawAlbum)?rawAlbum:"";
+    if(albumUrl){
+        const frame=document.createElement("iframe");
+        frame.src=albumUrl;
+        frame.title="Our memories";
+        gallery.appendChild(frame);
+    }else{
+        const fallback=document.createElement("div");
+        fallback.className="default-gallery";
+        fallback.textContent="❤️ 💕 💖 💞 💓 💘 💝";
+        gallery.appendChild(fallback);
+    }
+
+    document.getElementById("galleryBtn").addEventListener("click",toggleGallery);
+    document.getElementById("downloadBtn").addEventListener("click",download);
+
+    startCounter();
+}
+
+function startCounter(){
+    const counter=document.getElementById("counter");
+    if(!counter) return;
+    const parsedDate=parseDate(rawDate);
+    if(!parsedDate){
+        counter.style.display="none";
+        return;
+    }
+
+    const label=dateLabels[rawDateType]||"our special day";
+    const update=()=>{
+        const now=new Date();
+        const diff=diffYMD(parsedDate,now);
+        const dateText=parsedDate.toLocaleDateString(undefined,{year:"numeric",month:"long",day:"numeric"});
+        counter.innerHTML=`Since ${label} on <strong>${dateText}</strong> — ${diff.years} years, ${diff.months} months, ${diff.days} days ❤️`;
+    };
+
+    update();
+    setInterval(update,3600000);
+}
+
+function parseDate(value){
+    if(!value) return null;
+    const parsed=new Date(value);
+    if(Number.isNaN(parsed.getTime())) return null;
+    return parsed;
+}
+
+function diffYMD(start,end){
+    let years=end.getFullYear()-start.getFullYear();
+    let months=end.getMonth()-start.getMonth();
+    let days=end.getDate()-start.getDate();
+
+    if(days<0){
+        months-=1;
+        const prevMonth=new Date(end.getFullYear(),end.getMonth(),0);
+        days+=prevMonth.getDate();
+    }
+    if(months<0){
+        years-=1;
+        months+=12;
+    }
+
+    return {years:Math.max(0,years),months:Math.max(0,months),days:Math.max(0,days)};
+}
+
+function toggleGallery(){
+    const g=document.getElementById("gallery");
+    if(!g) return;
+    g.style.display=g.style.display==="block"?"none":"block";
+}
+
+function isValidUrl(value){
+    if(!value) return false;
+    try{
+        const url=new URL(value);
+        return url.protocol==="https:";
+    }catch(err){
+        return false;
+    }
+}
+
+function launchConfetti(){
+    for(let i=0;i<80;i++){
+        let c=document.createElement("div");
+        c.className="confetti";
+        c.style.left=Math.random()*100+"vw";
+        c.style.backgroundColor=`hsl(${Math.random()*360},100%,50%)`;
+        document.body.appendChild(c);
+        setTimeout(()=>c.remove(),4000);
+    }
+}
+
+function download(){
+    html2canvas(document.querySelector(".container")).then((canvas)=>{
+        let a=document.createElement("a");
+        a.download="memory.png";
+        a.href=canvas.toDataURL();
+        a.click();
+    });
+}
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+</body>
+</html>
